@@ -17,9 +17,25 @@ namespace netcore_test
             BuildWebHost(args).Run();
         }
 
-        public static IWebHost BuildWebHost(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>()
+        public static IWebHost BuildWebHost(string[] args)
+        {
+            var configuration = new ConfigurationBuilder()
+                .AddCommandLine(args)
                 .Build();
+                
+            var hostUrl = configuration["hosturl"];
+            if (string.IsNullOrEmpty(hostUrl))
+                hostUrl = "http://0.0.0.0:6000";
+        
+            var host = new WebHostBuilder()
+                .UseKestrel()                
+                .UseUrls(hostUrl)   // <!-- this 
+                .UseContentRoot(Directory.GetCurrentDirectory())
+                .UseIISIntegration()
+                .UseStartup<Startup>()
+                .UseConfiguration(configuration)
+                .Build();
+            return host;
+        }
     }
 }
