@@ -14,4 +14,9 @@ RUN dotnet ef database update
 FROM build-env
 WORKDIR /app
 COPY --from=build-env /app/out .
+
+EXPOSE 5001/tcp
+ENV ASPNETCORE_URLS http://*:5001
+#ENV ASPNETCORE_ENVIRONMENT Development
+
 ENTRYPOINT ["dotnet", "netcore-test.dll"]
