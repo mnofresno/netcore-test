@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,11 +12,18 @@ using Microsoft.Extensions.DependencyInjection;
 using netcore_test.Data;
 using netcore_test.Models;
 using netcore_test.Services;
+using System.IO;
+using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.DataProtection.KeyManagement;
+using Microsoft.AspNetCore.DataProtection.XmlEncryption;
+using Microsoft.AspNetCore.DataProtection.Repositories;
+using System.Data.Common;
 
 namespace netcore_test
 {
     public class Startup
     {
+        private const string AppNameKey = "netcore-test";
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -27,7 +35,7 @@ namespace netcore_test
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
+                options.UseMySql(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -35,7 +43,10 @@ namespace netcore_test
 
             // Add application services.
             services.AddTransient<IEmailSender, EmailSender>();
-
+            services.AddDataProtection()
+                .SetApplicationName(AppNameKey)
+                .PersistKeysToFileSystem(new System.IO.DirectoryInfo(@"/var/dpkeys/"));
+                
             services.AddMvc();
         }
 

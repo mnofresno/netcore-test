@@ -1,0 +1,13 @@
+﻿{
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=docker0-host-ip;User Id=root;Password=password;Port=3306;Database=netcore-test",
+    "DefaultConnectionExplicitSSLdisable": "server=localhost;port=3306;database=netcore-test;user=root;password=123456;Ssl-mode=none;",
+    "SqlLiteConnection": "DataSource=app.db"
+  },
+  "Logging": {
+    "IncludeScopes": false,
+    "LogLevel": {
+      "Default": "Warning"
+    }
+  }
+}
